@@ -3,7 +3,7 @@ import * as Linking from 'expo-linking';
 import { openAuthSessionAsync } from "expo-web-browser";
 
 export const config = {
-    platform: "com.gbe.restate",
+    platform: 'com.gbe.restate',
     endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT,
     projectId: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID
 }
@@ -21,8 +21,11 @@ export const account = new Account(client);
 export async function login() {
     try {
         const redirectUrl = Linking.createURL('/');
+        console.log("Redirect URL:", redirectUrl); // Debugging
         const response = await account.createOAuth2Token(OAuthProvider.Google, redirectUrl)
     
+        console.log("OAuthProvider.Google:", OAuthProvider.Google);
+
         if (!response) throw new Error("Failed to login");
 
         const browserResult = await openAuthSessionAsync(
@@ -30,12 +33,14 @@ export async function login() {
             redirectUrl
         );
 
+        console.log("Browser Result:", browserResult); // Debugging
+
         if (browserResult.type != 'success') throw new Error("Failed to login.");
 
         const url = new URL(browserResult.url);
 
         const secret = url.searchParams.get('secret')?.toString();
-        const userId = url.searchParams.get('userID')?.toString();
+        const userId = url.searchParams.get('userId')?.toString();
 
         if (!secret || !userId) throw new Error("Failed to login.");
 
@@ -61,7 +66,7 @@ export async function logout() {
     }
 }
 
-export async function getUser() {
+export async function getCurrentUser() {
     try {
         const response = await account.get();
         if (response.$id) {
@@ -70,7 +75,7 @@ export async function getUser() {
             return {
                 ...response,
                 avatar: userAvatar.toString(),
-            }
+            };
         }
         return response;
     } catch (error) {
