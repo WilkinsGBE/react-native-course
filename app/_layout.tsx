@@ -18,7 +18,7 @@ export default function RootLayout() {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [fontsLoaded]); 
 
   if (!fontsLoaded) {
     return null;
