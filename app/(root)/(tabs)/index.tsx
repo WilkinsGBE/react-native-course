@@ -25,8 +25,6 @@ const Home = () => {
           <Image source={icons.bell} className="size-6" />
         </View>
         <Search />
-
-      </View>
         <View className="my-5">
           <View className="flex flex-row items-center justify-between">
             <Text className="text-xl font-rubik-bold text-black-300">
@@ -38,13 +36,12 @@ const Home = () => {
               </Text>
             </TouchableOpacity>
           </View>
-          <FeaturedCard />
-          <Card />
         </View>
-
+      </View>
+      <FeaturedCard />
+      <Card />
     </SafeAreaView>
   );
 };
 
 export default Home;
-
