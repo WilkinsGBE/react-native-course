@@ -10,7 +10,7 @@ export const config = {
     galleriesCollectionId: process.env.EXPO_PUBLIC_APPWRITE_GALLERIE_COLLECTION_ID,
     reviewsCollectionId: process.env.EXPO_PUBLIC_APPWRITE_REVIEWS_COLLECTION_ID,
     agentsCollectionId: process.env.EXPO_PUBLIC_APPWRITE_AGENTS_COLLECTION_ID,
-    propretiesCollectionId: process.env.EXPO_PUBLIC_APPWRITE_PROPRETIES_COLLECTION_ID
+    propertiesCollectionId: process.env.EXPO_PUBLIC_APPWRITE_PROPERTIES_COLLECTION_ID
 }
 
 export const client = new Client();
