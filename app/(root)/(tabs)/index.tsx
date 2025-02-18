@@ -1,4 +1,11 @@
-import { View, Text, Image, TouchableOpacity, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
 import React, { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import icons from "@/constants/icons";
@@ -9,6 +16,7 @@ import { useGlobalContext } from "@/lib/global-provider";
 import { router, useLocalSearchParams } from "expo-router";
 import { useAppwrite } from "@/lib/useAppwrite";
 import { getLatestProperties, getProperties } from "@/lib/appwrite";
+import NoResults from "@/components/NoResults";
 
 const Home = () => {
   const { user } = useGlobalContext();
@@ -51,11 +59,18 @@ const Home = () => {
         renderItem={({ item }) => (
           <Card item={item} onPress={() => handleCardPress(item.$id)} />
         )}
-        keyExtractor={(item) => item.toString()}
+        keyExtractor={(item) => item.$id}
         numColumns={2}
         contentContainerClassName="pb-32"
         columnWrapperClassName="flex gap-5 px-5"
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          loading ? (
+            <ActivityIndicator size="large" className="text-primary-300 mt-5" />
+          ) : (
+            <NoResults />
+          )
+        }
         ListHeaderComponent={
           <View className="px-5">
             <View className="flex flex-row items-center justify-between mt-5">
@@ -88,15 +103,27 @@ const Home = () => {
                 </TouchableOpacity>
               </View>
 
+
+              {latestPropertiesLoading ? (
+                <ActivityIndicator size="large" className="text-primary-300" />
+              ) : !latestProperties || latestProperties.length === 0 ? (
+                <NoResults />
+              ) : (
               <FlatList
                 data={latestProperties}
-                keyExtractor={(item) => item.toString()}
+                keyExtractor={(item) => item.$id}
                 horizontal
                 bounces={false}
                 showsHorizontalScrollIndicator={false}
                 contentContainerClassName="flex gap-5 mt-5"
-                renderItem={({ item }) => <FeaturedCard item={item} onPress={() => handleCardPress(item.$id)} />}
+                renderItem={({ item }) => (
+                  <FeaturedCard
+                    item={item}
+                    onPress={() => handleCardPress(item.$id)}
+                  />
+                )}
               />
+              )}
             </View>
 
             <View className="flex flex-row items-center justify-between">
