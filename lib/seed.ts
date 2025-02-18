@@ -27,13 +27,13 @@ const propertyTypes = [
 
 const facilities = [
   "Laundry",
-  "Car Parking",
-  "Sports Center",
+  "Parking",
+  "Sports",
   "Cutlery",
   "Gym",
-  "Swimming pool",
+  "Swimming",
   "Wifi",
-  "Pet-friendly",
+  "Pet",
 ];
 
 function getRandomSubset<T>(
@@ -50,14 +50,11 @@ function getRandomSubset<T>(
     );
   }
 
-  // Generate a random size for the subset within the range [minItems, maxItems]
   const subsetSize =
     Math.floor(Math.random() * (maxItems - minItems + 1)) + minItems;
 
-  // Create a copy of the array to avoid modifying the original
   const arrayCopy = [...array];
 
-  // Shuffle the array copy using Fisher-Yates algorithm
   for (let i = arrayCopy.length - 1; i > 0; i--) {
     const randomIndex = Math.floor(Math.random() * (i + 1));
     [arrayCopy[i], arrayCopy[randomIndex]] = [
@@ -66,13 +63,11 @@ function getRandomSubset<T>(
     ];
   }
 
-  // Return the first `subsetSize` elements of the shuffled array
   return arrayCopy.slice(0, subsetSize);
 }
 
 async function seed() {
   try {
-    // Clear existing data from all collections
     for (const key in COLLECTIONS) {
       const collectionId = COLLECTIONS[key as keyof typeof COLLECTIONS];
       const documents = await databases.listDocuments(
@@ -90,7 +85,6 @@ async function seed() {
 
     console.log("Cleared all existing data.");
 
-    // Seed Agents
     const agents = [];
     for (let i = 1; i <= 5; i++) {
       const agent = await databases.createDocument(
@@ -107,7 +101,6 @@ async function seed() {
     }
     console.log(`Seeded ${agents.length} agents.`);
 
-    // Seed Reviews
     const reviews = [];
     for (let i = 1; i <= 20; i++) {
       const review = await databases.createDocument(
@@ -118,14 +111,13 @@ async function seed() {
           name: `Reviewer ${i}`,
           avatar: reviewImages[Math.floor(Math.random() * reviewImages.length)],
           review: `This is a review by Reviewer ${i}.`,
-          rating: Math.floor(Math.random() * 5) + 1, // Rating between 1 and 5
+          rating: Math.floor(Math.random() * 5) + 1,
         }
       );
       reviews.push(review);
     }
     console.log(`Seeded ${reviews.length} reviews.`);
 
-    // Seed Galleries
     const galleries = [];
     for (const image of galleryImages) {
       const gallery = await databases.createDocument(
@@ -139,16 +131,16 @@ async function seed() {
 
     console.log(`Seeded ${galleries.length} galleries.`);
 
-    // Seed Properties
     for (let i = 1; i <= 20; i++) {
       const assignedAgent = agents[Math.floor(Math.random() * agents.length)];
+      const assignedReviews = getRandomSubset(reviews, 5, 7);
+      const assignedGalleries = getRandomSubset(galleries, 3, 8);
 
-      const assignedReviews = getRandomSubset(reviews, 5, 7); // 5 to 7 reviews
-      const assignedGalleries = getRandomSubset(galleries, 3, 8); // 3 to 8 galleries
-
-      const selectedFacilities = facilities
-        .sort(() => 0.5 - Math.random())
-        .slice(0, Math.floor(Math.random() * facilities.length) + 1);
+      const selectedFacilities = getRandomSubset(
+        facilities,
+        1,
+        facilities.length
+      ); 
 
       const image =
         propertiesImages.length - 1 >= i
@@ -172,7 +164,7 @@ async function seed() {
           bedrooms: Math.floor(Math.random() * 5) + 1,
           bathrooms: Math.floor(Math.random() * 5) + 1,
           rating: Math.floor(Math.random() * 5) + 1,
-          facilities: selectedFacilities,
+          facilities: selectedFacilities[0],
           image: image,
           agent: assignedAgent.$id,
           reviews: assignedReviews.map((review) => review.$id),
