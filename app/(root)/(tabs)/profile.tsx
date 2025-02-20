@@ -89,7 +89,7 @@ const Profile = () => {
             <SettingsItem key={index} {...item} />
           ))}
         </View>
-        <View className="flex flex-col mt-5 border-t pt5 boder-primary-200">
+        <View className="flex flex-col mt-5 border-t pt5 border-primary-200">
           <SettingsItem
             icon={icons.logout}
             title="Logout"
